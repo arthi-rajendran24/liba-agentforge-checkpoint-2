@@ -2,7 +2,7 @@
   "checkpoint": 2,
   "name": "canonical-langchain-agent",
   "canonical_repository": "https://github.com/arthi-rajendran24/agentforge.git",
-  "canonical_commit": "cfdf362",
+  "canonical_commit": "c4d29b7",
   "inherits": ["checkpoint-1"],
   "required_layers": ["deterministic_tools", "langchain_create_agent", "required_tool_evidence", "fastapi_interface", "offline_rehearsal"],
   "network_required": "only for one deliberate live Gemini check",
