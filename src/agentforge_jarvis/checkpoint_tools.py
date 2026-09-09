@@ -1,9 +1,19 @@
+"""Small deterministic tools used by the cumulative Day 1 checkpoints.
+
+The names and domain identifiers intentionally match the complete AgentForge
+application.  The full application adds richer scenarios and cross-agent
+handoffs in :mod:`agentforge_jarvis.business`.
+"""
+
 from __future__ import annotations
 
 import math
+from collections.abc import Callable
+
+from .catalog import AGENTS
 
 
-def finance_break_even(price: float, unit_cost: float, fixed_cost: float, budget: float) -> dict:
+def model_finances(price: float, unit_cost: float, fixed_cost: float, budget: float) -> dict:
     values = [price, unit_cost, fixed_cost, budget]
     if any(value < 0 for value in values):
         raise ValueError("Values cannot be negative")
@@ -20,7 +30,7 @@ def finance_break_even(price: float, unit_cost: float, fixed_cost: float, budget
     }
 
 
-def marketing_allocation(budget: float, weights: dict[str, float]) -> dict:
+def plan_marketing(budget: float, weights: dict[str, float]) -> dict:
     if budget < 0 or not weights:
         raise ValueError("Budget and weights must be valid")
     if any(weight < 0 for weight in weights.values()) or abs(sum(weights.values()) - 100) > 1e-9:
@@ -30,7 +40,7 @@ def marketing_allocation(budget: float, weights: dict[str, float]) -> dict:
     return {"budget": budget, "allocation": allocation}
 
 
-def operations_capacity(units: int, units_per_day: int, lead_days: int, deadline_days: int) -> dict:
+def assess_supply(units: int, units_per_day: int, lead_days: int, deadline_days: int) -> dict:
     if units < 0 or lead_days < 0 or deadline_days < 0 or units_per_day <= 0:
         raise ValueError("Capacity inputs are invalid")
     production_days = math.ceil(units / units_per_day)
@@ -44,7 +54,7 @@ def operations_capacity(units: int, units_per_day: int, lead_days: int, deadline
     }
 
 
-def analytics_conversion(visits: int, conversions: int, prior_rate: float) -> dict:
+def analyze_signals(visits: int, conversions: int, prior_rate: float) -> dict:
     if visits <= 0 or conversions < 0 or conversions > visits:
         raise ValueError("Analytics counts are invalid")
     rate = conversions / visits * 100
@@ -55,7 +65,7 @@ def analytics_conversion(visits: int, conversions: int, prior_rate: float) -> di
     }
 
 
-def hr_skills_gap(required: list[str], covered: list[str], learning_hours: int) -> dict:
+def screen_skills(required: list[str], covered: list[str], learning_hours: int) -> dict:
     if learning_hours < 0 or not required:
         raise ValueError("HR inputs are invalid")
     missing = sorted(set(required) - set(covered))
@@ -67,7 +77,7 @@ def hr_skills_gap(required: list[str], covered: list[str], learning_hours: int) 
     }
 
 
-def management_gate(budget: str, capacity: str, evidence: str, owner: str) -> dict:
+def synthesize_strategy(budget: str, capacity: str, evidence: str, owner: str) -> dict:
     values = {"budget": budget, "capacity": capacity, "evidence": evidence}
     statuses = {value.upper() for value in values.values()}
     if statuses - {"PASS", "REVIEW", "FAIL"} or not owner.strip():
@@ -79,3 +89,24 @@ def management_gate(budget: str, capacity: str, evidence: str, owner: str) -> di
         "decision_owner": owner,
         "human_approval_required": True,
     }
+
+
+Tool = Callable[..., dict]
+
+CHECKPOINT_TOOLS: dict[str, Tool] = {
+    "analytics": analyze_signals,
+    "marketing": plan_marketing,
+    "hr": screen_skills,
+    "operations": assess_supply,
+    "finance": model_finances,
+    "general-management": synthesize_strategy,
+}
+
+
+def run_checkpoint_tool(domain: str, payload: dict) -> dict:
+    if domain not in AGENTS or domain not in CHECKPOINT_TOOLS:
+        raise ValueError(f"Unsupported domain: {domain}")
+    result = CHECKPOINT_TOOLS[domain](**payload)
+    if not isinstance(result, dict):
+        raise TypeError("A checkpoint tool must return a dictionary")
+    return result

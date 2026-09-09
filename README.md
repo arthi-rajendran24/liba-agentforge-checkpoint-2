@@ -1,20 +1,15 @@
 # LIBA AgentForge Checkpoint 2
 
-Clone this repository for a complete Checkpoint 2 reference, or open it beside a student's Checkpoint 1 project in Google Antigravity. It contains all Checkpoint 1 code plus the compatibility adapter, shared service and Streamlit interface.
-
-## Checkpoint 2: live-capable domain agent
-
-This branch inherits Checkpoint 1 and adds a single compatibility seam, shared service and local Streamlit interface. Rehearsal mode makes no model or network call. Live mode makes one Gemini request only after the deterministic tool succeeds.
+Checkpoint 2 is the second runnable subset of the canonical [AgentForge repository](https://github.com/arthi-rajendran24/agentforge). It contains Checkpoint 1 plus a real LangChain tool-calling agent and a small FastAPI browser interface that use the same package, domain identifiers and tool names as the complete application.
 
 ```sh
 git clone https://github.com/arthi-rajendran24/liba-agentforge-checkpoint-2.git
 cd liba-agentforge-checkpoint-2
-uv sync
+uv sync --frozen
 uv run pytest -q
-uv run streamlit run app.py
+uv run python workshop/checkpoint_app.py
 ```
 
-If Checkpoint 1 already passes, preserve the student's domain tool and tests. Ask Antigravity to inspect `patches/checkpoint-1-to-2.patch` and adapt only `src/agentforge/student_adapter.py` when necessary.
+Open `http://127.0.0.1:8787`. Rehearsal mode makes no external request but still traverses LangChain's agent and tool loop. Live mode makes a deliberate Gemini request using the private environment variables described in `.env.example`. The service rejects an answer that lacks successful tool evidence.
 
-Previous checkpoint: https://github.com/arthi-rajendran24/liba-agentforge-checkpoint-1  
-Next checkpoint: https://github.com/arthi-rajendran24/liba-agentforge-checkpoint-3
+Checkpoint 3 is the complete canonical repository: [liba-agentforge-checkpoint-3](https://github.com/arthi-rajendran24/liba-agentforge-checkpoint-3). The full cumulative contract is in `workshop/CHECKPOINT_PATH.md`.

@@ -1,10 +1,10 @@
 {
   "checkpoint": 2,
-  "name": "live-capable-domain-agent",
+  "name": "canonical-langchain-agent",
+  "canonical_repository": "https://github.com/arthi-rajendran24/agentforge.git",
+  "canonical_commit": "cfdf362",
   "inherits": ["checkpoint-1"],
-  "required_layers": ["scaffold", "deterministic_tool", "offline_tests", "compatibility_adapter", "shared_service", "local_interface"],
-  "preserve_from_student": ["src/agentforge/tools.py", "tests/test_tools.py", "BUILD.md"],
-  "preferred_additions": ["src/agentforge/contracts.py", "src/agentforge/student_adapter.py", "src/agentforge/service.py", "app.py"],
-  "network_required": "only for one deliberate live check",
-  "verification": "uv run pytest -q"
+  "required_layers": ["deterministic_tools", "langchain_create_agent", "required_tool_evidence", "fastapi_interface", "offline_rehearsal"],
+  "network_required": "only for one deliberate live Gemini check",
+  "verification": "uv sync --frozen && uv run pytest -q"
 }

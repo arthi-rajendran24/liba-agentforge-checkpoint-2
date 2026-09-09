@@ -1,11 +1,5 @@
 # Checkpoint 2 recovery
 
-Open the student's project and this repository as two folders in one Antigravity Project. Use `ANTIGRAVITY_MERGE_PROMPT.md`; do not overwrite passing student files.
+Use this repository when Checkpoint 1 passes but the student's agent or local interface does not. Preserve the passing deterministic tool. Merge `checkpoint_agent.py`, `checkpoint_app.py`, the workshop launcher and the Checkpoint 2 test.
 
-| Student state | Action |
-|---|---|
-| Nothing usable | Clone this cumulative repository |
-| Checkpoint 1 passes | Inspect `patches/checkpoint-1-to-2.patch` and merge only the adapter, service and interface layer |
-| Partial or uncertain | Run current offline tests, inventory passing layers and preserve every passing file |
-
-The student's chosen specialization, function, tests and wording take precedence when valid.
+Checkpoint 2 is a tracked subset of the canonical repository. Except for this repository's README and checkpoint metadata, every tracked file must have the same content as the canonical AgentForge commit recorded in `checkpoint.json`.
